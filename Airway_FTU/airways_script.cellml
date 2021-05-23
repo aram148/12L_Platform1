@@ -1,0 +1,317 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="airways_script" xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cellml="http://www.cellml.org/cellml/1.1#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <component name="Environment">
+        <variable cmeta:id="Environment_time" name="time" public_interface="out" units="second"/>
+    </component>
+    <import xlink:href="hai.cellml">
+        <component component_ref="stress" name="stress"/>
+        <component component_ref="AMp" name="AMp"/>
+        <component component_ref="AM" name="AM"/>
+        <component component_ref="Mp" name="Mp"/>
+        <component component_ref="M" name="M"/>
+        <component component_ref="model_parameters" name="model_parameters"/>
+    </import>
+    <import xlink:href="airwayradius.cellml">
+        <component component_ref="lambert_r1" name="lambert_r1"/>
+        <component component_ref="airway1_vals" name="airway1_vals"/>
+        <component component_ref="parameters" name="parameters"/>
+    </import>
+    <import xlink:href="airway1_radius.cellml">
+        <component component_ref="lambert_r21" name="lambert_r21"/>
+        <component component_ref="lambert_r22" name="lambert_r22"/>
+        <component component_ref="airway2_vals" name="airway2_vals"/>
+        <component component_ref="airway22_vals" name="airway22_vals"/>
+        <component component_ref="parameters_r2" name="parameters_r2"/>
+    </import>
+    <import xlink:href="branched_algeb.cellml">
+        <component component_ref="algeb" name="algeb"/>
+    </import>
+    <component name="parent_airway">
+        <variable name="r1" public_interface="in" units="mm"/>
+        <variable name="r_w_r1" public_interface="in" units="mm"/>
+        <variable name="r_m_r1" public_interface="in" units="mm"/>
+    </component>
+    <component name="child_airway">
+        <variable name="r21" public_interface="in" units="mm"/>
+        <variable name="r22" public_interface="in" units="mm"/>
+    </component>
+    <component name="kap">
+        <variable initial_value="1" name="kappa" public_interface="out" units="dimensionless"/>
+    </component>
+    <component name="p_teth">
+        <variable name="tau_r1" public_interface="in" units="dimensionless"/>
+        <variable name="tau_r21" public_interface="in" units="dimensionless"/>
+        <variable name="tau_r22" public_interface="in" units="dimensionless"/>
+        <variable name="pmidr1" public_interface="in" units="mmHg"/>
+        <variable name="pmidr21" public_interface="in" units="mmHg"/>
+        <variable name="pmidr22" public_interface="in" units="mmHg"/>
+        <variable name="Pmin_r1" public_interface="in" units="mmHg"/>
+        <variable name="Pmin_r22" public_interface="in" units="mmHg"/>
+        <variable name="Pmin_r21" public_interface="in" units="mmHg"/>
+        <variable name="p" public_interface="in" units="mmHg"/>
+        <variable name="Da1" public_interface="in" units="mm3"/>
+        <variable name="Da21" public_interface="in" units="mm3"/>
+        <variable name="Da22" public_interface="in" units="mm3"/>
+        <variable name="lambda" public_interface="in" units="mm3"/>
+        <variable name="Lambda" public_interface="in" units="mm3"/>
+        <variable name="temp" public_interface="in" units="mm3"/>
+        <variable name="W" public_interface="in" units="mm3"/>
+    </component>
+    <component name="flow_press">
+        <variable name="pbot" public_interface="in" units="mmHg"/>
+        <variable name="q1p" public_interface="in" units="dimensionless"/>
+        <variable name="q21" public_interface="in" units="dimensionless"/>
+        <variable name="q22" public_interface="in" units="dimensionless"/>
+    </component>
+    <connection>
+        <map_components component_1="flow_press" component_2="algeb"/>
+        <map_variables variable_1="pbot" variable_2="pbot"/>
+        <map_variables variable_1="q1p" variable_2="q1p"/>
+        <map_variables variable_1="q21" variable_2="q21"/>
+        <map_variables variable_1="q22" variable_2="q22"/>
+    </connection>
+    <connection>
+        <map_components component_1="p_teth" component_2="algeb"/>
+        <map_variables variable_1="tau_r1" variable_2="tau_r1"/>
+        <map_variables variable_1="tau_r21" variable_2="tau_r21"/>
+        <map_variables variable_1="tau_r22" variable_2="tau_r22"/>
+        <map_variables variable_1="pmidr1" variable_2="pmidr1"/>
+        <map_variables variable_1="pmidr21" variable_2="pmidr21"/>
+        <map_variables variable_1="pmidr22" variable_2="pmidr22"/>
+        <map_variables variable_1="p" variable_2="p"/>
+        <map_variables variable_1="Da1" variable_2="Da1"/>
+        <map_variables variable_1="Da21" variable_2="Da21"/>
+        <map_variables variable_1="Da22" variable_2="Da22"/>
+        <map_variables variable_1="lambda" variable_2="lambda"/>
+        <map_variables variable_1="Lambda" variable_2="Lambda"/>
+        <map_variables variable_1="temp" variable_2="temp"/>
+        <map_variables variable_1="W" variable_2="W"/>
+    </connection>
+    <!--    def map between algeb and parameters for
+        vars P0 and P0;
+    enddef;-->
+    <connection>
+        <map_components component_1="algeb" component_2="lambert_r1"/>
+        <map_variables variable_1="r1" variable_2="r1"/>
+        <map_variables variable_1="tau_r1" variable_2="tau_r1"/>
+        <map_variables variable_1="Pmin_r1" variable_2="Pmin_r1"/>
+        <map_variables variable_1="pmidr1" variable_2="pmidr1"/>
+    </connection>
+    <connection>
+        <map_components component_1="algeb" component_2="lambert_r21"/>
+        <map_variables variable_1="r21" variable_2="r21"/>
+        <map_variables variable_1="tau_r21" variable_2="tau_r21"/>
+        <map_variables variable_1="pmidr21" variable_2="pmidr21"/>
+    </connection>
+    <connection>
+        <map_components component_1="algeb" component_2="lambert_r22"/>
+        <map_variables variable_1="r22" variable_2="r22"/>
+        <map_variables variable_1="tau_r22" variable_2="tau_r22"/>
+        <map_variables variable_1="pmidr22" variable_2="pmidr22"/>
+    </connection>
+    <connection>
+        <map_components component_1="p_teth" component_2="lambert_r1"/>
+        <map_variables variable_1="Pmin_r1" variable_2="Pmin_r1"/>
+    </connection>
+    <connection>
+        <map_components component_1="p_teth" component_2="lambert_r21"/>
+        <map_variables variable_1="Pmin_r21" variable_2="Pmin_r21"/>
+    </connection>
+    <connection>
+        <map_components component_1="p_teth" component_2="lambert_r22"/>
+        <map_variables variable_1="Pmin_r22" variable_2="Pmin_r22"/>
+    </connection>
+    <connection>
+        <map_components component_1="kap" component_2="lambert_r1"/>
+        <map_variables variable_1="kappa" variable_2="kappa"/>
+    </connection>
+    <connection>
+        <map_components component_1="kap" component_2="lambert_r21"/>
+        <map_variables variable_1="kappa" variable_2="kappa"/>
+    </connection>
+    <connection>
+        <map_components component_1="kap" component_2="lambert_r22"/>
+        <map_variables variable_1="kappa" variable_2="kappa"/>
+    </connection>
+    <connection>
+        <map_components component_1="child_airway" component_2="lambert_r21"/>
+        <map_variables variable_1="r21" variable_2="r21"/>
+    </connection>
+    <connection>
+        <map_components component_1="child_airway" component_2="lambert_r22"/>
+        <map_variables variable_1="r22" variable_2="r22"/>
+    </connection>
+    <connection>
+        <map_components component_1="parent_airway" component_2="lambert_r1"/>
+        <map_variables variable_1="r1" variable_2="r1"/>
+    </connection>
+    <connection>
+        <map_components component_1="parent_airway" component_2="airway1_vals"/>
+        <map_variables variable_1="r_w_r1" variable_2="r_w_r1"/>
+        <map_variables variable_1="r_m_r1" variable_2="r_m_r1"/>
+    </connection>
+    <connection>
+        <map_components component_1="parameters" component_2="airway1_vals"/>
+        <map_variables variable_1="Rw_r1" variable_2="Rw_r1"/>
+        <map_variables variable_1="Rm_r1" variable_2="Rm_r1"/>
+        <map_variables variable_1="Ri_r1" variable_2="Ri_r1"/>
+        <map_variables variable_1="rsmax_r1" variable_2="rsmax_r1"/>
+        <map_variables variable_1="moo" variable_2="moo"/>
+        <map_variables variable_1="noo" variable_2="noo"/>
+        <map_variables variable_1="rho" variable_2="rho"/>
+        <map_variables variable_1="f" variable_2="f"/>
+    </connection>
+    <connection>
+        <map_components component_1="parameters" component_2="lambert_r1"/>
+        <map_variables variable_1="Ri_sq_r1" variable_2="Ri_sq_r1"/>
+        <map_variables variable_1="rmax_sq_r1" variable_2="rmax_sq_r1"/>
+        <map_variables variable_1="N1_r1" variable_2="N1_r1"/>
+        <map_variables variable_1="N2_r1" variable_2="N2_r1"/>
+        <map_variables variable_1="P1_r1" variable_2="P1_r1"/>
+        <map_variables variable_1="P2_r1" variable_2="P2_r1"/>
+        <map_variables variable_1="rho" variable_2="rho"/>
+        <map_variables variable_1="rmax_r1" variable_2="rmax_r1"/>
+        <map_variables variable_1="P0" variable_2="P0"/>
+        <map_variables variable_1="gamma" variable_2="gamma"/>
+    </connection>
+    <connection>
+        <map_components component_1="airway1_vals" component_2="lambert_r1"/>
+        <map_variables variable_1="v_smc_r1" variable_2="v_smc_r1"/>
+        <map_variables variable_1="rad_r1" variable_2="rad_r1"/>
+        <map_variables variable_1="r1" variable_2="r1"/>
+        <map_variables variable_1="f_a_r1" variable_2="f_a_r1"/>
+        <map_variables variable_1="P_t_r1" variable_2="P_t_r1"/>
+    </connection>
+    <connection>
+        <map_components component_1="airway1_vals" component_2="stress"/>
+        <map_variables variable_1="stress" variable_2="stress"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="airway1_vals"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="AMp"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="AM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="Mp"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="M"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="model_parameters"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="lambert_r1"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="stress" component_2="lambert_r1"/>
+        <map_variables variable_1="stress" variable_2="stress"/>
+    </connection>
+    <connection>
+        <map_components component_1="parameters_r2" component_2="airway2_vals"/>
+        <map_variables variable_1="Rw_r21" variable_2="Rw_r21"/>
+        <map_variables variable_1="Rm_r21" variable_2="Rm_r21"/>
+        <map_variables variable_1="Ri_r21" variable_2="Ri_r21"/>
+        <map_variables variable_1="rsmax_r21" variable_2="rsmax_r21"/>
+        <map_variables variable_1="moo" variable_2="moo"/>
+        <map_variables variable_1="noo" variable_2="noo"/>
+        <map_variables variable_1="rho" variable_2="rho"/>
+        <map_variables variable_1="f" variable_2="f"/>
+    </connection>
+    <connection>
+        <map_components component_1="parameters_r2" component_2="lambert_r21"/>
+        <map_variables variable_1="Ri_sq_r21" variable_2="Ri_sq_r21"/>
+        <map_variables variable_1="rmax_sq_r21" variable_2="rmax_sq_r21"/>
+        <map_variables variable_1="N1_r21" variable_2="N1_r21"/>
+        <map_variables variable_1="N2_r21" variable_2="N2_r21"/>
+        <map_variables variable_1="P1_r21" variable_2="P1_r21"/>
+        <map_variables variable_1="P2_r21" variable_2="P2_r21"/>
+        <map_variables variable_1="rho" variable_2="rho"/>
+        <map_variables variable_1="rmax_r21" variable_2="rmax_r21"/>
+        <map_variables variable_1="P0" variable_2="P0"/>
+        <map_variables variable_1="gamma" variable_2="gamma"/>
+    </connection>
+    <connection>
+        <map_components component_1="airway2_vals" component_2="lambert_r21"/>
+        <map_variables variable_1="v_smc_r21" variable_2="v_smc_r21"/>
+        <map_variables variable_1="rad21" variable_2="rad21"/>
+        <map_variables variable_1="r21" variable_2="r21"/>
+        <map_variables variable_1="f_a_r21" variable_2="f_a_r21"/>
+        <map_variables variable_1="P_t_r21" variable_2="P_t_r21"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="airway2_vals"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="airway2_vals" component_2="stress"/>
+        <map_variables variable_1="stress" variable_2="stress"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="lambert_r21"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="stress" component_2="lambert_r21"/>
+        <map_variables variable_1="stress" variable_2="stress"/>
+    </connection>
+    <connection>
+        <map_components component_1="parameters_r2" component_2="airway22_vals"/>
+        <map_variables variable_1="Rw_r22" variable_2="Rw_r22"/>
+        <map_variables variable_1="Rm_r22" variable_2="Rm_r22"/>
+        <map_variables variable_1="Ri_r22" variable_2="Ri_r22"/>
+        <map_variables variable_1="rsmax_r22" variable_2="rsmax_r22"/>
+        <map_variables variable_1="moo" variable_2="moo"/>
+        <map_variables variable_1="noo" variable_2="noo"/>
+        <map_variables variable_1="rho" variable_2="rho"/>
+        <map_variables variable_1="f" variable_2="f"/>
+    </connection>
+    <connection>
+        <map_components component_1="parameters_r2" component_2="lambert_r22"/>
+        <map_variables variable_1="Ri_sq_r22" variable_2="Ri_sq_r22"/>
+        <map_variables variable_1="rmax_sq_r22" variable_2="rmax_sq_r22"/>
+        <map_variables variable_1="N1_r22" variable_2="N1_r22"/>
+        <map_variables variable_1="N2_r22" variable_2="N2_r22"/>
+        <map_variables variable_1="P1_r22" variable_2="P1_r22"/>
+        <map_variables variable_1="P2_r22" variable_2="P2_r22"/>
+        <map_variables variable_1="rho" variable_2="rho"/>
+        <map_variables variable_1="rmax_r22" variable_2="rmax_r22"/>
+        <map_variables variable_1="P0" variable_2="P0"/>
+        <map_variables variable_1="gamma" variable_2="gamma"/>
+    </connection>
+    <connection>
+        <map_components component_1="airway22_vals" component_2="lambert_r22"/>
+        <map_variables variable_1="v_smc_r22" variable_2="v_smc_r22"/>
+        <map_variables variable_1="rad22" variable_2="rad22"/>
+        <map_variables variable_1="r22" variable_2="r22"/>
+        <map_variables variable_1="f_a_r22" variable_2="f_a_r22"/>
+        <map_variables variable_1="P_t_r22" variable_2="P_t_r22"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="airway22_vals"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="airway22_vals" component_2="stress"/>
+        <map_variables variable_1="stress" variable_2="stress"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="lambert_r22"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="stress" component_2="lambert_r22"/>
+        <map_variables variable_1="stress" variable_2="stress"/>
+    </connection>
+</model>

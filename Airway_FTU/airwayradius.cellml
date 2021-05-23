@@ -1,0 +1,755 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This is a Cellml implementation of lambert_r1's model of 
+ airway radius coupled with ASM contraction force.
+ ASM contractile force is modelled as a P_Arameter kappa.
+ Time dependent radii is modeled via a 1st order ODE.
+ Airway P_Arameters are taken from Politi et al 2010.
+ Airway order 7 P_Arameter values are used in this model.
+
+ May include Hai-Murphy ODE for ASM contraction
+
+-->
+<model name="airwayradius" xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cellml="http://www.cellml.org/cellml/1.1#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <units name="mmHg">
+        <unit multiplier="133.32" units="pascal"/>
+    </units>
+    <units name="cmH2O">
+        <unit multiplier="98.0665" units="pascal"/>
+    </units>
+    <units name="mm2">
+        <unit exponent="2" prefix="milli" units="meter"/>
+    </units>
+    <units name="mm">
+        <unit prefix="milli" units="meter"/>
+    </units>
+    <units name="per_sec">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <units name="mmHg_second_per_litre">
+        <unit units="mmHg"/>
+        <unit units="second"/>
+        <unit exponent="-1" units="litre"/>
+    </units>
+    <units name="radian_per_second">
+        <unit units="radian"/>
+        <unit exponent="-1" units="second"/>
+    </units>
+    <units name="mmHg_per_second">
+        <unit units="mmHg"/>
+        <unit exponent="-1" units="second"/>
+    </units>
+    <units name="litre_per_second_mmHg">
+        <unit units="litre"/>
+        <unit exponent="-1" units="second"/>
+        <unit exponent="-1" units="mmHg"/>
+    </units>
+    <units name="litre_per_second">
+        <unit units="litre"/>
+        <unit exponent="-1" units="second"/>
+    </units>
+    <units name="mmHg">
+        <unit multiplier="133.32" units="pascal"/>
+    </units>
+    <units name="per_mmHg">
+        <unit exponent="-1" units="mmHg"/>
+    </units>
+    <units name="mmHg_second_per_litre">
+        <unit units="mmHg"/>
+        <unit units="second"/>
+        <unit exponent="-1" units="litre"/>
+    </units>
+    <units name="mmHg_per_litre">
+        <unit units="mmHg"/>
+        <unit exponent="-1" units="litre"/>
+    </units>
+    <units name="mmHg_litre_second2">
+        <unit units="mmHg"/>
+        <unit units="litre"/>
+        <unit exponent="2" units="second"/>
+    </units>
+    <units name="mole_per_litre">
+        <unit units="mole"/>
+        <unit exponent="-1" units="litre"/>
+    </units>
+    <units name="litre_per_mole">
+        <unit units="litre"/>
+        <unit exponent="-1" units="mole"/>
+    </units>
+    <units name="per_second">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <units name="litre_per_second_mole">
+        <unit units="litre"/>
+        <unit exponent="-1" units="second"/>
+        <unit exponent="-1" units="mole"/>
+    </units>
+    <units name="m2_kg_per_K_second2">
+        <unit exponent="2" units="metre"/>
+        <unit units="kilogram"/>
+        <unit exponent="-1" units="kelvin"/>
+        <unit exponent="2" units="second"/>
+    </units>
+    <units name="mm3">
+        <unit exponent="3" prefix="milli" units="metre"/>
+    </units>
+    <units name="mole_per_second_mmHg">
+        <unit units="mole"/>
+        <unit exponent="-1" units="second"/>
+        <unit exponent="-1" units="mmHg"/>
+    </units>
+    <units name="mole_per_litre_mmHg">
+        <unit units="mole"/>
+        <unit exponent="-1" units="litre"/>
+        <unit exponent="-1" units="mmHg"/>
+    </units>
+    <units name="ms">
+        <unit prefix="milli" units="second"/>
+    </units>
+    <component name="Environment">
+        <variable cmeta:id="Environment_time" name="time" public_interface="out" units="second"/>
+    </component>
+    <units name="ml">
+        <unit prefix="milli" units="litre"/>
+    </units>
+    <import xlink:href="hai.cellml">
+        <component component_ref="stress" name="stress"/>
+        <component component_ref="AMp" name="AMp"/>
+        <component component_ref="AM" name="AM"/>
+        <component component_ref="Mp" name="Mp"/>
+        <component component_ref="M" name="M"/>
+        <component component_ref="model_parameters" name="model_parameters"/>
+    </import>
+    <component name="lambert_r1">
+        <variable name="time" public_interface="in" units="second"/>
+        <variable name="Ri_sq_r1" public_interface="in" units="mm2"/>
+        <variable name="rmax_sq_r1" public_interface="in" units="mm"/>
+        <variable name="N1_r1" public_interface="in" units="dimensionless"/>
+        <variable name="N2_r1" public_interface="in" units="dimensionless"/>
+        <variable name="P1_r1" public_interface="in" units="mmHg"/>
+        <variable name="P2_r1" public_interface="in" units="mmHg"/>
+        <variable name="rho" public_interface="in" units="dimensionless"/>
+        <variable initial_value="0.318" name="r1" public_interface="out" units="mm"/>
+        <variable name="Ptm_r1" units="mmHg"/>
+        <variable name="P0" public_interface="in" units="mmHg"/>
+        <variable name="kappa" public_interface="in" units="dimensionless"/>
+        <variable name="rad_r1" public_interface="out" units="mm"/>
+        <variable name="rmax_r1" public_interface="in" units="mm"/>
+        <variable name="V_r1" units="dimensionless"/>
+        <variable name="gamma" public_interface="in" units="dimensionless"/>
+        <variable name="stress" public_interface="in" units="dimensionless"/>
+        <variable name="v_smc_r1" public_interface="in" units="dimensionless"/>
+        <variable name="f_a_r1" public_interface="in" units="dimensionless"/>
+        <variable name="Pmin_r1" public_interface="out" units="mmHg"/>
+        <variable name="P_t_r1" public_interface="in" units="mmHg"/>
+        <variable name="tau_r1" public_interface="in" units="dimensionless"/>
+        <variable name="pmidr1" public_interface="in" units="mmHg"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>Pmin_r1</ci>
+                <apply>
+                    <plus/>
+                    <ci>P0</ci>
+                    <ci>P_t_r1</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>Ptm_r1</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <minus/>
+                        <ci>pmidr1</ci>
+                        <apply>
+                            <divide/>
+                            <apply>
+                                <times/>
+                                <ci>kappa</ci>
+                                <ci>f_a_r1</ci>
+                            </apply>
+                            <ci>r1</ci>
+                        </apply>
+                    </apply>
+                    <ci>tau_r1</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>rad_r1</ci>
+                <piecewise>
+                    <piece>
+                        <apply>
+                            <root/>
+                            <apply>
+                                <times/>
+                                <ci>Ri_sq_r1</ci>
+                                <apply>
+                                    <power/>
+                                    <apply>
+                                        <minus/>
+                                        <cn cellml:units="dimensionless">1</cn>
+                                        <apply>
+                                            <divide/>
+                                            <ci>Ptm_r1</ci>
+                                            <ci>P1_r1</ci>
+                                        </apply>
+                                    </apply>
+                                    <apply>
+                                        <minus/>
+                                        <ci>N1_r1</ci>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <leq/>
+                            <ci>Ptm_r1</ci>
+                            <cn cellml:units="dimensionless">0</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <apply>
+                            <root/>
+                            <apply>
+                                <minus/>
+                                <ci>rmax_sq_r1</ci>
+                                <apply>
+                                    <times/>
+                                    <apply>
+                                        <minus/>
+                                        <ci>rmax_sq_r1</ci>
+                                        <ci>Ri_sq_r1</ci>
+                                    </apply>
+                                    <apply>
+                                        <power/>
+                                        <apply>
+                                            <minus/>
+                                            <cn cellml:units="dimensionless">1</cn>
+                                            <apply>
+                                                <divide/>
+                                                <ci>Ptm_r1</ci>
+                                                <ci>P2_r1</ci>
+                                            </apply>
+                                        </apply>
+                                        <apply>
+                                            <minus/>
+                                            <ci>N2_r1</ci>
+                                        </apply>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <geq/>
+                            <ci>Ptm_r1</ci>
+                            <cn cellml:units="dimensionless">0</cn>
+                        </apply>
+                    </piece>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>r1</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <ci>rho</ci>
+                    <apply>
+                        <minus/>
+                        <ci>rad_r1</ci>
+                        <ci>r1</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>V_r1</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <minus/>
+                            <ci>gamma</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <cn cellml:units="dimensionless">2</cn>
+                            <pi/>
+                            <ci>rmax_r1</ci>
+                        </apply>
+                    </apply>
+                    <ci>rho</ci>
+                    <apply>
+                        <minus/>
+                        <ci>rad_r1</ci>
+                        <ci>r1</ci>
+                    </apply>
+                    <ci>v_smc_r1</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="airway1_vals">
+        <variable name="e_w_r1" units="dimensionless"/>
+        <variable name="e_m_r1" units="dimensionless"/>
+        <variable name="r_w_r1" units="dimensionless"/>
+        <variable name="r_m_r1" units="dimensionless"/>
+        <variable name="r_s_r1" units="dimensionless"/>
+        <variable name="Rw_r1" public_interface="in" units="mm"/>
+        <variable name="Ri_r1" public_interface="in" units="mm"/>
+        <variable name="Rm_r1" public_interface="in" units="mm"/>
+        <variable name="fl_r1" units="dimensionless"/>
+        <variable name="rsmax_r1" public_interface="in" units="mm"/>
+        <variable name="f_a_r1" public_interface="out" units="dimensionless"/>
+        <variable name="stress" public_interface="in" units="dimensionless"/>
+        <variable name="D_Rm_r1" units="dimensionless"/>
+        <variable name="sigma_rrm_r1" units="dimensionless"/>
+        <variable name="sigma_rrw_r1" units="dimensionless"/>
+        <variable name="sigma_ttm_r1" units="dimensionless"/>
+        <variable name="sigma_ttw_r1" units="dimensionless"/>
+        <variable name="moo" public_interface="in" units="dimensionless"/>
+        <variable name="noo" public_interface="in" units="dimensionless"/>
+        <variable name="P_t_r1" public_interface="out" units="mmHg"/>
+        <variable name="f" public_interface="in" units="per_second"/>
+        <variable name="time" public_interface="in" units="second"/>
+        <variable name="rad_r1" public_interface="in" units="mm"/>
+        <variable name="r1" public_interface="in" units="mm"/>
+        <variable name="v_smc_r1" public_interface="out" units="dimensionless"/>
+        <variable name="rho" public_interface="in" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>P_t_r1</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">0</cn>
+                    <apply>
+                        <sin/>
+                        <apply>
+                            <times/>
+                            <cn cellml:units="dimensionless">2</cn>
+                            <pi/>
+                            <ci>f</ci>
+                            <ci>time</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>e_w_r1</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>Rw_r1</ci>
+                        <ci>Ri_r1</ci>
+                    </apply>
+                    <ci>Ri_r1</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>e_m_r1</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>Rm_r1</ci>
+                        <ci>Rw_r1</ci>
+                    </apply>
+                    <ci>Ri_r1</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>r_w_r1</ci>
+                <apply>
+                    <times/>
+                    <ci>Ri_r1</ci>
+                    <apply>
+                        <root/>
+                        <apply>
+                            <minus/>
+                            <apply>
+                                <plus/>
+                                <apply>
+                                    <power/>
+                                    <apply>
+                                        <plus/>
+                                        <cn cellml:units="dimensionless">1</cn>
+                                        <ci>e_w_r1</ci>
+                                    </apply>
+                                    <cn cellml:units="dimensionless">2</cn>
+                                </apply>
+                                <apply>
+                                    <power/>
+                                    <apply>
+                                        <divide/>
+                                        <ci>rad_r1</ci>
+                                        <ci>Ri_r1</ci>
+                                    </apply>
+                                    <cn cellml:units="dimensionless">2</cn>
+                                </apply>
+                            </apply>
+                            <cn cellml:units="dimensionless">1</cn>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>r_m_r1</ci>
+                <apply>
+                    <times/>
+                    <ci>Ri_r1</ci>
+                    <apply>
+                        <root/>
+                        <apply>
+                            <minus/>
+                            <apply>
+                                <plus/>
+                                <apply>
+                                    <power/>
+                                    <apply>
+                                        <plus/>
+                                        <ci>e_m_r1</ci>
+                                        <ci>e_w_r1</ci>
+                                        <cn cellml:units="dimensionless">1</cn>
+                                    </apply>
+                                    <cn cellml:units="dimensionless">2</cn>
+                                </apply>
+                                <apply>
+                                    <power/>
+                                    <apply>
+                                        <divide/>
+                                        <ci>rad_r1</ci>
+                                        <ci>Ri_r1</ci>
+                                    </apply>
+                                    <cn cellml:units="dimensionless">2</cn>
+                                </apply>
+                            </apply>
+                            <cn cellml:units="dimensionless">1</cn>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>r_s_r1</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">0.5</cn>
+                    <apply>
+                        <plus/>
+                        <ci>r_w_r1</ci>
+                        <ci>r_m_r1</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- Expt data fit for AM force at latch state-->
+            <apply>
+                <eq/>
+                <ci>fl_r1</ci>
+                <piecewise>
+                    <piece>
+                        <apply>
+                            <power/>
+                            <apply>
+                                <times/>
+                                <cn cellml:units="dimensionless">0</cn>
+                                <apply>
+                                    <sin/>
+                                    <apply>
+                                        <divide/>
+                                        <apply>
+                                            <times/>
+                                            <pi/>
+                                            <ci>r_s_r1</ci>
+                                        </apply>
+                                        <apply>
+                                            <times/>
+                                            <cn cellml:units="dimensionless">2</cn>
+                                            <ci>rsmax_r1</ci>
+                                        </apply>
+                                    </apply>
+                                </apply>
+                            </apply>
+                            <cn cellml:units="dimensionless">3</cn>
+                        </apply>
+                        <apply>
+                            <leq/>
+                            <ci>r_s_r1</ci>
+                            <apply>
+                                <times/>
+                                <cn cellml:units="dimensionless">2</cn>
+                                <ci>rsmax_r1</ci>
+                            </apply>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dimensionless">0</cn>
+                    </otherwise>
+                </piecewise>
+            </apply>
+            <!-- Total active force-->
+            <apply>
+                <eq/>
+                <ci>f_a_r1</ci>
+                <apply>
+                    <plus/>
+                    <ci>fl_r1</ci>
+                    <ci>stress</ci>
+                </apply>
+            </apply>
+            <!-- Radial stress-->
+            <apply>
+                <eq/>
+                <ci>D_Rm_r1</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>Rm_r1</ci>
+                        <ci>r_m_r1</ci>
+                    </apply>
+                    <ci>Rm_r1</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>sigma_rrm_r1</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">2</cn>
+                        <ci>moo</ci>
+                        <apply>
+                            <plus/>
+                            <ci>D_Rm_r1</ci>
+                            <apply>
+                                <power/>
+                                <apply>
+                                    <times/>
+                                    <ci>noo</ci>
+                                    <ci>D_Rm_r1</ci>
+                                </apply>
+                                <cn cellml:units="dimensionless">2</cn>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <ci>P_t_r1</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>sigma_rrw_r1</ci>
+                <apply>
+                    <minus/>
+                    <ci>sigma_rrm_r1</ci>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <times/>
+                            <ci>f_a_r1</ci>
+                            <apply>
+                                <minus/>
+                                <ci>Rm_r1</ci>
+                                <ci>Rw_r1</ci>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <cn cellml:units="dimensionless">0.5</cn>
+                            <apply>
+                                <plus/>
+                                <ci>r_m_r1</ci>
+                                <ci>r_w_r1</ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- Hoop stress-->
+            <apply>
+                <eq/>
+                <ci>sigma_ttm_r1</ci>
+                <apply>
+                    <plus/>
+                    <ci>sigma_rrm_r1</ci>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <times/>
+                            <ci>f_a_r1</ci>
+                            <apply>
+                                <minus/>
+                                <ci>Rm_r1</ci>
+                                <ci>Rw_r1</ci>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <plus/>
+                            <ci>r_m_r1</ci>
+                            <ci>r_w_r1</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>sigma_ttw_r1</ci>
+                <apply>
+                    <plus/>
+                    <ci>sigma_rrw_r1</ci>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <times/>
+                            <ci>f_a_r1</ci>
+                            <apply>
+                                <minus/>
+                                <ci>Rm_r1</ci>
+                                <ci>Rw_r1</ci>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <plus/>
+                            <ci>r_m_r1</ci>
+                            <ci>r_w_r1</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!--Vel of SMC contraction-->
+            <apply>
+                <eq/>
+                <ci>v_smc_r1</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <divide/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <minus/>
+                            <ci>r_w_r1</ci>
+                            <ci>r_m_r1</ci>
+                        </apply>
+                    </apply>
+                    <ci>rho</ci>
+                    <apply>
+                        <minus/>
+                        <ci>rad_r1</ci>
+                        <ci>r1</ci>
+                    </apply>
+                    <ci>rad_r1</ci>
+                    <apply>
+                        <ln/>
+                        <apply>
+                            <divide/>
+                            <ci>r_w_r1</ci>
+                            <ci>r_m_r1</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="parameters">
+        <variable initial_value="0.004225" name="Ri_sq_r1" public_interface="out" units="mm2"/>
+        <variable initial_value="0.1011" name="rmax_sq_r1" public_interface="out" units="mm"/>
+        <variable initial_value="1" name="N1_r1" public_interface="out" units="dimensionless"/>
+        <variable initial_value="8" name="N2_r1" public_interface="out" units="dimensionless"/>
+        <variable initial_value="0.130075752" name="P1_r1" public_interface="out" units="mmHg"/>
+        <variable initial_value="-20.88271528" name="P2_r1" public_interface="out" units="mmHg"/>
+        <variable initial_value="1" name="rho" public_interface="out" units="dimensionless"/>
+        <variable initial_value="6" name="P0" public_interface="out" units="mmHg"/>
+        <!--        var kappa: dimensionless {pub:in};-->
+        <variable initial_value="0.318" name="rmax_r1" public_interface="out" units="mm"/>
+        <variable initial_value="25" name="gamma" public_interface="out" units="dimensionless"/>
+        <variable initial_value="0.116" name="Rw_r1" public_interface="out" units="mm"/>
+        <variable initial_value="0.065" name="Ri_r1" public_interface="out" units="mm"/>
+        <variable initial_value="0.128" name="Rm_r1" public_interface="out" units="mm"/>
+        <variable initial_value="0.334" name="rsmax_r1" public_interface="out" units="mm"/>
+        <variable initial_value="15.09" name="moo" public_interface="out" units="dimensionless"/>
+        <variable initial_value="1.5" name="noo" public_interface="out" units="dimensionless"/>
+        <variable initial_value="0.25" name="f" public_interface="out" units="per_second"/>
+    </component>
+    <connection>
+        <map_components component_1="parameters" component_2="airway1_vals"/>
+        <map_variables variable_1="Rw_r1" variable_2="Rw_r1"/>
+        <map_variables variable_1="Rm_r1" variable_2="Rm_r1"/>
+        <map_variables variable_1="Ri_r1" variable_2="Ri_r1"/>
+        <map_variables variable_1="rsmax_r1" variable_2="rsmax_r1"/>
+        <map_variables variable_1="moo" variable_2="moo"/>
+        <map_variables variable_1="noo" variable_2="noo"/>
+        <map_variables variable_1="rho" variable_2="rho"/>
+        <map_variables variable_1="f" variable_2="f"/>
+    </connection>
+    <connection>
+        <map_components component_1="parameters" component_2="lambert_r1"/>
+        <map_variables variable_1="Ri_sq_r1" variable_2="Ri_sq_r1"/>
+        <map_variables variable_1="rmax_sq_r1" variable_2="rmax_sq_r1"/>
+        <map_variables variable_1="N1_r1" variable_2="N1_r1"/>
+        <map_variables variable_1="N2_r1" variable_2="N2_r1"/>
+        <map_variables variable_1="P1_r1" variable_2="P1_r1"/>
+        <map_variables variable_1="P2_r1" variable_2="P2_r1"/>
+        <map_variables variable_1="rho" variable_2="rho"/>
+        <map_variables variable_1="rmax_r1" variable_2="rmax_r1"/>
+        <!--        vars kappa and kappa;-->
+        <map_variables variable_1="P0" variable_2="P0"/>
+        <map_variables variable_1="gamma" variable_2="gamma"/>
+    </connection>
+    <connection>
+        <map_components component_1="airway1_vals" component_2="lambert_r1"/>
+        <map_variables variable_1="v_smc_r1" variable_2="v_smc_r1"/>
+        <map_variables variable_1="rad_r1" variable_2="rad_r1"/>
+        <map_variables variable_1="r1" variable_2="r1"/>
+        <map_variables variable_1="f_a_r1" variable_2="f_a_r1"/>
+        <map_variables variable_1="P_t_r1" variable_2="P_t_r1"/>
+    </connection>
+    <connection>
+        <map_components component_1="airway1_vals" component_2="stress"/>
+        <map_variables variable_1="stress" variable_2="stress"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="airway1_vals"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="AMp"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="AM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="Mp"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="M"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="model_parameters"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Environment" component_2="lambert_r1"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="stress" component_2="lambert_r1"/>
+        <map_variables variable_1="stress" variable_2="stress"/>
+    </connection>
+</model>

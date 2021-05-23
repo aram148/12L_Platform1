@@ -1,0 +1,621 @@
+<?xml version='1.0'?>
+<model name="muscle_ftu" xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cellml="http://www.cellml.org/cellml/1.1#">
+    <units name="uM">
+        <unit prefix="micro" units="mole"/>
+    </units>
+    <units name="ms1">
+        <unit exponent="-1" prefix="milli" units="second"/>
+    </units>
+    <units name="ms">
+        <unit prefix="milli" units="second"/>
+    </units>
+    <units name="uM_per_ms1">
+        <unit units="uM"/>
+        <unit exponent="-1" units="ms1"/>
+    </units>
+    <units name="mV">
+        <unit prefix="milli" units="volt"/>
+    </units>
+    <component name="Environment">
+        <variable name="t" public_interface="out" units="ms"/>
+    </component>
+    <component name="muscle">
+        <variable initial_value="1" name="D" units="dimensionless"/>
+        <variable initial_value="0" name="A1" units="dimensionless"/>
+        <variable initial_value="0" name="A2" units="dimensionless"/>
+        <variable name="Roff" units="dimensionless"/>
+        <variable initial_value="0.05" name="f" units="ms1"/>
+        <variable initial_value="0.4" name="g" units="ms1"/>
+        <variable initial_value="0.004" name="gs" units="ms1"/>
+        <variable initial_value="0.008" name="h1" units="ms1"/>
+        <variable initial_value="0.006" name="h2" units="ms1"/>
+        <variable initial_value="0" name="kon0" units="ms1"/>
+        <variable initial_value="0.1" name="koff0" units="ms1"/>
+        <variable initial_value="0.12" name="konCa" units="ms1"/>
+        <variable initial_value="0.05" name="koffCa" units="ms1"/>
+        <variable initial_value="1" name="RT" units="dimensionless"/>
+        <variable name="kon" units="ms1"/>
+        <variable name="koff" units="ms1"/>
+        <variable name="Ca_ms" public_interface="in" units="uM"/>
+        <variable name="Ca50" units="uM"/>
+        <variable name="F" units="dimensionless"/>
+        <variable name="t" public_interface="in" units="ms"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>Ca50</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">0.5</cn>
+                    <ci>Ca_ms</ci>
+                </apply>
+            </apply>
+            <!--Assumption-->
+            <apply>
+                <eq/>
+                <ci>kon</ci>
+                <apply>
+                    <plus/>
+                    <ci>kon0</ci>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <times/>
+                            <apply>
+                                <minus/>
+                                <ci>konCa</ci>
+                                <ci>kon0</ci>
+                            </apply>
+                            <ci>Ca_ms</ci>
+                        </apply>
+                        <apply>
+                            <plus/>
+                            <ci>Ca50</ci>
+                            <ci>Ca_ms</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>koff</ci>
+                <apply>
+                    <plus/>
+                    <ci>koff0</ci>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <times/>
+                            <apply>
+                                <minus/>
+                                <ci>koffCa</ci>
+                                <ci>koff0</ci>
+                            </apply>
+                            <ci>Ca_ms</ci>
+                        </apply>
+                        <apply>
+                            <plus/>
+                            <ci>Ca50</ci>
+                            <ci>Ca_ms</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>D</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <minus/>
+                            <apply>
+                                <times/>
+                                <ci>kon</ci>
+                                <ci>Roff</ci>
+                            </apply>
+                            <apply>
+                                <times/>
+                                <ci>koff</ci>
+                                <ci>D</ci>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>gs</ci>
+                            <ci>A2</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>g</ci>
+                            <ci>A1</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>f</ci>
+                        <ci>D</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>A1</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <plus/>
+                            <apply>
+                                <times/>
+                                <ci>f</ci>
+                                <ci>D</ci>
+                            </apply>
+                            <apply>
+                                <times/>
+                                <ci>h2</ci>
+                                <ci>A2</ci>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>g</ci>
+                            <ci>A1</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>h1</ci>
+                        <ci>A1</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>A2</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <times/>
+                            <ci>h1</ci>
+                            <ci>A1</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>h2</ci>
+                            <ci>A2</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>gs</ci>
+                        <ci>A2</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>Roff</ci>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <minus/>
+                            <ci>RT</ci>
+                            <ci>A1</ci>
+                        </apply>
+                        <ci>A2</ci>
+                    </apply>
+                    <ci>D</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>F</ci>
+                <apply>
+                    <plus/>
+                    <ci>A1</ci>
+                    <ci>A2</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <!--    def comp calcium as
+        var Ca: dimensionless {init: 0.5, pub: out};
+        var Caf: dimensionless {init: 0.5};
+        var C: dimensionless {init: 2};
+        var S: dimensionless {init: 6};
+        var k1: dimensionless;
+        var k2: dimensionless;
+        var k10: dimensionless {init: 9.6};
+        var k20: dimensionless {init: 5.9};
+        var k3: dimensionless {init: 65};
+        var k4: dimensionless {init: 45};
+        var t: second {pub: in};
+        var tp: second {init: 1};
+        var tau: dimensionless {init: 0.01};
+        var tol: dimensionless {init: 5};
+        var dk1dt: dimensionless;
+        var ton: second {init: 2};
+        var toff: second {init: 3};-->
+    <!--        dk1dt = -k10/tau*exp((-t-tp)/tau);-->
+    <!--        //        k1 = k10*exp((-t-tp)/tau);-->
+    <!--        //        k2 = sel
+        //            case abs(dk1dt)<tol:
+        //                k20;
+        //            otherwise:
+        //                0{dimensionless};
+        //        endsel;-->
+    <!--        k1 = sel
+            case (ton < t) and (t < toff):
+                k10;
+            otherwise:
+                0{dimensionless};
+        endsel;-->
+    <!--        k2 = sel
+            case k1 == 0{dimensionless}:
+                k20;
+            otherwise:
+                0{dimensionless};
+        endsel;-->
+    <!--        ode(Ca, t) = (k4*Caf-k3*Ca)*(1{dimensionless}-Caf)+k1*(C-Ca-Caf)+k2*Ca*(C-S-Ca-Caf);
+        ode(Caf, t) = -1{dimensionless}*(k4*Caf-k3*Ca)*(1{dimensionless}-Caf);
+    enddef;-->
+    <component name="calcium2">
+        <variable initial_value="1500" name="Ca_sr" units="uM"/>
+        <variable name="t" public_interface="in" units="ms"/>
+        <variable name="Rv" units="uM_per_ms1"/>
+        <variable initial_value="1" name="V_max" units="mV"/>
+        <variable initial_value="0.006" name="Ca_ms" public_interface="out" units="uM"/>
+        <variable initial_value="0.01" name="Lp" units="ms1"/>
+        <variable initial_value="0.12" name="kt2" units="ms1"/>
+        <variable initial_value="7.9" name="TC" units="uM"/>
+        <variable initial_value="140" name="T" units="uM"/>
+        <variable initial_value="0.12" name="kt1" units="uM_per_ms1"/>
+        <variable initial_value="506.8" name="PC" units="uM"/>
+        <variable initial_value="940" name="P" units="uM"/>
+        <variable initial_value="1" name="K_ms" units="uM"/>
+        <variable initial_value="0.0195" name="kp1" units="uM_per_ms1"/>
+        <variable initial_value="0.001" name="kp2" units="ms1"/>
+        <variable initial_value="0" name="CaR" units="uM"/>
+        <variable initial_value="0.2" name="kf" units="ms1"/>
+        <variable initial_value="3" name="K" units="uM"/>
+        <variable initial_value="0.03" name="kr" units="ms1"/>
+        <variable name="e1" units="dimensionless"/>
+        <variable name="e2" units="dimensionless"/>
+        <variable initial_value="-48.7" name="Ve1_bar" units="mV"/>
+        <variable initial_value="-4.1" name="Ve2_bar" units="mV"/>
+        <variable initial_value="12.3" name="ke1" units="mV"/>
+        <variable initial_value="12.9" name="ke2" units="mV"/>
+        <variable initial_value="6.58" name="R_max" units="uM_per_ms1"/>
+        <variable name="V" units="mV"/>
+        <variable initial_value="20" name="ton" units="ms"/>
+        <variable initial_value="30" name="toff" units="ms"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>V</ci>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="mV">25</cn>
+                        <apply>
+                            <and/>
+                            <apply>
+                                <lt/>
+                                <ci>ton</ci>
+                                <ci>t</ci>
+                            </apply>
+                            <apply>
+                                <lt/>
+                                <ci>t</ci>
+                                <ci>toff</ci>
+                            </apply>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <apply>
+                            <minus/>
+                            <cn cellml:units="mV">100</cn>
+                        </apply>
+                    </otherwise>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>Ca_sr</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <minus/>
+                            <ci>Rv</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>V_max</ci>
+                            <apply>
+                                <divide/>
+                                <ci>Ca_ms</ci>
+                                <apply>
+                                    <plus/>
+                                    <ci>Ca_ms</ci>
+                                    <ci>K_ms</ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <ci>Lp</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>Ca_ms</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <minus/>
+                            <apply>
+                                <plus/>
+                                <apply>
+                                    <minus/>
+                                    <apply>
+                                        <plus/>
+                                        <ci>Rv</ci>
+                                        <apply>
+                                            <times/>
+                                            <ci>kt2</ci>
+                                            <ci>TC</ci>
+                                        </apply>
+                                    </apply>
+                                    <apply>
+                                        <times/>
+                                        <ci>kt1</ci>
+                                        <ci>Ca_ms</ci>
+                                        <ci>T</ci>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <times/>
+                                    <ci>kp2</ci>
+                                    <ci>PC</ci>
+                                </apply>
+                            </apply>
+                            <apply>
+                                <times/>
+                                <ci>kp1</ci>
+                                <ci>Ca_ms</ci>
+                                <ci>P</ci>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>V_max</ci>
+                            <apply>
+                                <divide/>
+                                <ci>Ca_ms</ci>
+                                <apply>
+                                    <plus/>
+                                    <ci>Ca_ms</ci>
+                                    <ci>K_ms</ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <ci>Lp</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>TC</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <times/>
+                        <ci>kt1</ci>
+                        <ci>Ca_ms</ci>
+                        <ci>T</ci>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>kt2</ci>
+                        <ci>TC</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>PC</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <times/>
+                        <ci>kp1</ci>
+                        <ci>Ca_ms</ci>
+                        <ci>P</ci>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>kp2</ci>
+                        <ci>PC</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>CaR</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <divide/>
+                            <ci>kf</ci>
+                            <apply>
+                                <plus/>
+                                <cn cellml:units="dimensionless">1</cn>
+                                <apply>
+                                    <divide/>
+                                    <ci>K</ci>
+                                    <ci>Ca_ms</ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>CaR</ci>
+                            <ci>kr</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <times/>
+                            <ci>CaR</ci>
+                            <ci>kf</ci>
+                        </apply>
+                        <apply>
+                            <plus/>
+                            <cn cellml:units="dimensionless">1</cn>
+                            <apply>
+                                <divide/>
+                                <ci>K</ci>
+                                <ci>Ca_ms</ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>Rv</ci>
+                <apply>
+                    <times/>
+                    <ci>R_max</ci>
+                    <apply>
+                        <divide/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <plus/>
+                            <cn cellml:units="dimensionless">1</cn>
+                            <apply>
+                                <times/>
+                                <ci>e2</ci>
+                                <apply>
+                                    <plus/>
+                                    <cn cellml:units="dimensionless">1</cn>
+                                    <ci>e1</ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>e1</ci>
+                <apply>
+                    <exp/>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <minus/>
+                            <ci>Ve1_bar</ci>
+                            <ci>V</ci>
+                        </apply>
+                        <ci>ke1</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>e2</ci>
+                <apply>
+                    <exp/>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <minus/>
+                            <ci>Ve2_bar</ci>
+                            <ci>V</ci>
+                        </apply>
+                        <ci>ke2</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <connection>
+        <map_components component_1="Environment" component_2="muscle"/>
+        <map_variables variable_1="t" variable_2="t"/>
+    </connection>
+    <!--    def map between Environment and calcium for
+        vars t and t;
+    enddef;-->
+    <!--    def map between calcium and muscle for
+        vars Ca and Ca;
+    enddef;-->
+    <connection>
+        <map_components component_1="Environment" component_2="calcium2"/>
+        <map_variables variable_1="t" variable_2="t"/>
+    </connection>
+    <connection>
+        <map_components component_1="calcium2" component_2="muscle"/>
+        <map_variables variable_1="Ca_ms" variable_2="Ca_ms"/>
+    </connection>
+</model>
