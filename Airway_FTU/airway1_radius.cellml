@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0'?>
 <model name="airway2_radius" xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cellml="http://www.cellml.org/cellml/1.1#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
     <units name="mmHg">
         <unit multiplier="133.32" units="pascal"/>
@@ -303,7 +303,7 @@
         <variable name="Ptm_r22" units="mmHg"/>
         <variable name="P0" public_interface="in" units="mmHg"/>
         <variable name="kappa" public_interface="in" units="dimensionless"/>
-        <variable name="rad22" units="mm"/>
+        <variable name="rad22" public_interface="out" units="mm"/>
         <variable name="rmax_r22" public_interface="in" units="mm"/>
         <variable name="V_r22" units="dimensionless"/>
         <variable name="gamma" public_interface="in" units="dimensionless"/>

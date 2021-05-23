@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0'?>
 <!-- This is a Cellml implementation of lambert_r1's model of 
  airway radius coupled with ASM contraction force.
  ASM contractile force is modelled as a P_Arameter kappa.
@@ -299,8 +299,8 @@
     <component name="airway1_vals">
         <variable name="e_w_r1" units="dimensionless"/>
         <variable name="e_m_r1" units="dimensionless"/>
-        <variable name="r_w_r1" units="dimensionless"/>
-        <variable name="r_m_r1" units="dimensionless"/>
+        <variable name="r_w_r1" public_interface="out" units="dimensionless"/>
+        <variable name="r_m_r1" public_interface="out" units="dimensionless"/>
         <variable name="r_s_r1" units="dimensionless"/>
         <variable name="Rw_r1" public_interface="in" units="mm"/>
         <variable name="Ri_r1" public_interface="in" units="mm"/>

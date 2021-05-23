@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0'?>
 <model name="branched_algeb" xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cellml="http://www.cellml.org/cellml/1.1#">
     <units name="mm">
         <unit prefix="milli" units="meter"/>
@@ -10,9 +10,9 @@
         <unit multiplier="133.32" units="pascal"/>
     </units>
     <component name="algeb">
-        <variable name="Da1" units="mm3"/>
-        <variable name="Da21" units="mm3"/>
-        <variable name="Da22" units="mm3"/>
+        <variable name="Da1" public_interface="out" units="mm3"/>
+        <variable name="Da21" public_interface="out" units="mm3"/>
+        <variable name="Da22" public_interface="out" units="mm3"/>
         <variable initial_value="10.19716213" name="aa" units="dimensionless"/>
         <variable initial_value="1.9008e-8" name="moo1" units="dimensionless"/>
         <variable name="r1" public_interface="in" units="mm"/>
@@ -23,18 +23,18 @@
         <variable initial_value="1.7" name="Lr22" units="mm"/>
         <variable initial_value="-50" name="qhat" units="dimensionless"/>
         <variable name="p" public_interface="out" units="mmHg"/>
-        <variable name="pbot" units="mmHg"/>
+        <variable name="pbot" public_interface="out" units="mmHg"/>
         <variable name="Pmin_r1" public_interface="in" units="mmHg"/>
-        <variable name="lambda" units="mm3"/>
-        <variable name="temp" units="mm3"/>
+        <variable name="lambda" public_interface="out" units="mm3"/>
+        <variable name="temp" public_interface="out" units="mm3"/>
         <variable name="ar1" units="mm"/>
         <variable name="ar21" units="mm"/>
         <variable name="ar22" units="mm"/>
-        <variable name="W" units="mm3"/>
-        <variable name="Lambda" units="mm3"/>
-        <variable name="q1p" units="dimensionless"/>
-        <variable name="q21" units="dimensionless"/>
-        <variable name="q22" units="dimensionless"/>
+        <variable name="W" public_interface="out" units="mm3"/>
+        <variable name="Lambda" public_interface="out" units="mm3"/>
+        <variable name="q1p" public_interface="out" units="dimensionless"/>
+        <variable name="q21" public_interface="out" units="dimensionless"/>
+        <variable name="q22" public_interface="out" units="dimensionless"/>
         <variable name="del_pr1" units="mmHg"/>
         <variable name="del_pr21" units="mmHg"/>
         <variable name="del_pr22" units="mmHg"/>
@@ -237,41 +237,41 @@
                 <eq/>
                 <ci>p</ci>
                 <apply>
-                    <times/>
+                    <divide/>
                     <apply>
-                        <minus/>
+                        <times/>
                         <apply>
                             <divide/>
                             <apply>
                                 <times/>
                                 <apply>
-                                    <plus/>
-                                    <ci>Da21</ci>
-                                    <ci>Da22</ci>
+                                    <minus/>
+                                    <apply>
+                                        <divide/>
+                                        <apply>
+                                            <times/>
+                                            <apply>
+                                                <plus/>
+                                                <ci>Da21</ci>
+                                                <ci>Da22</ci>
+                                            </apply>
+                                            <ci>qhat</ci>
+                                        </apply>
+                                        <ci>lambda</ci>
+                                    </apply>
+                                    <apply>
+                                        <times/>
+                                        <ci>ptop</ci>
+                                        <ci>Da1</ci>
+                                    </apply>
                                 </apply>
-                                <ci>qhat</ci>
+                                <cn cellml:units="dimensionless">1</cn>
                             </apply>
-                            <ci>lambda</ci>
-                        </apply>
-                        <apply>
-                            <times/>
-                            <ci>ptop</ci>
-                            <ci>Da1</ci>
-                        </apply>
-                    </apply>
-                    <apply>
-                        <times/>
-                        <apply>
-                            <divide/>
-                            <cn cellml:units="dimensionless">1</cn>
                             <ci>W</ci>
                         </apply>
-                        <apply>
-                            <divide/>
-                            <cn cellml:units="dimensionless">1</cn>
-                            <ci>Lambda</ci>
-                        </apply>
+                        <cn cellml:units="dimensionless">1</cn>
                     </apply>
+                    <ci>Lambda</ci>
                 </apply>
             </apply>
             <!--*pow(W, -1{dimensionless})*pow(Lambda, -1{dimensionless});-->
