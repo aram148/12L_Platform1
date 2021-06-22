@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 <model name="branched_algeb" xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cellml="http://www.cellml.org/cellml/1.1#">
     <units name="mm">
-        <unit prefix="milli" units="meter"/>
+        <unit prefix="milli" units="metre"/>
     </units>
     <units name="mm3">
         <unit exponent="3" units="mm"/>
@@ -21,10 +21,10 @@
         <variable initial_value="1.8778" name="Lr1" units="mm"/>
         <variable initial_value="1.7" name="Lr21" units="mm"/>
         <variable initial_value="1.7" name="Lr22" units="mm"/>
-        <variable initial_value="-50" name="qhat" units="dimensionless"/>
-        <variable name="p" public_interface="out" units="mmHg"/>
-        <variable name="pbot" public_interface="out" units="mmHg"/>
-        <variable name="Pmin_r1" public_interface="in" units="mmHg"/>
+        <variable initial_value="-5000" name="qhat" units="dimensionless"/>
+        <variable name="p" public_interface="out" units="pascal"/>
+        <variable name="pbot" public_interface="out" units="pascal"/>
+        <variable name="Pmin_r1" public_interface="in" units="pascal"/>
         <variable name="lambda" public_interface="out" units="mm3"/>
         <variable name="temp" public_interface="out" units="mm3"/>
         <variable name="ar1" units="mm"/>
@@ -35,21 +35,21 @@
         <variable name="q1p" public_interface="out" units="dimensionless"/>
         <variable name="q21" public_interface="out" units="dimensionless"/>
         <variable name="q22" public_interface="out" units="dimensionless"/>
-        <variable name="del_pr1" units="mmHg"/>
-        <variable name="del_pr21" units="mmHg"/>
-        <variable name="del_pr22" units="mmHg"/>
-        <variable name="mu_r21" units="dimensionless"/>
-        <variable name="mu_r22" units="dimensionless"/>
-        <variable name="mu_r1" units="dimensionless"/>
+        <variable name="del_pr1" units="pascal"/>
+        <variable name="del_pr21" units="pascal"/>
+        <variable name="del_pr22" units="pascal"/>
+        <variable name="mu_r21" units="pascal"/>
+        <variable name="mu_r22" units="pascal"/>
+        <variable name="mu_r1" units="pascal"/>
         <variable initial_value="5E1" name="A" units="dimensionless"/>
-        <variable name="ptop" units="mmHg"/>
+        <variable name="ptop" units="pascal"/>
         <variable name="tau_r1" public_interface="out" units="dimensionless"/>
         <variable name="tau_r21" public_interface="out" units="dimensionless"/>
         <variable name="tau_r22" public_interface="out" units="dimensionless"/>
         <variable initial_value="0.445" name="R_ref" units="mm"/>
-        <variable name="pmidr1" public_interface="out" units="mmHg"/>
-        <variable name="pmidr21" public_interface="out" units="mmHg"/>
-        <variable name="pmidr22" public_interface="out" units="mmHg"/>
+        <variable name="pmidr1" public_interface="out" units="pascal"/>
+        <variable name="pmidr21" public_interface="out" units="pascal"/>
+        <variable name="pmidr22" public_interface="out" units="pascal"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -239,39 +239,31 @@
                 <apply>
                     <divide/>
                     <apply>
-                        <times/>
+                        <minus/>
                         <apply>
                             <divide/>
                             <apply>
                                 <times/>
                                 <apply>
-                                    <minus/>
-                                    <apply>
-                                        <divide/>
-                                        <apply>
-                                            <times/>
-                                            <apply>
-                                                <plus/>
-                                                <ci>Da21</ci>
-                                                <ci>Da22</ci>
-                                            </apply>
-                                            <ci>qhat</ci>
-                                        </apply>
-                                        <ci>lambda</ci>
-                                    </apply>
-                                    <apply>
-                                        <times/>
-                                        <ci>ptop</ci>
-                                        <ci>Da1</ci>
-                                    </apply>
+                                    <plus/>
+                                    <ci>Da21</ci>
+                                    <ci>Da22</ci>
                                 </apply>
-                                <cn cellml:units="dimensionless">1</cn>
+                                <ci>qhat</ci>
                             </apply>
-                            <ci>W</ci>
+                            <ci>lambda</ci>
                         </apply>
-                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <times/>
+                            <ci>ptop</ci>
+                            <ci>Da1</ci>
+                        </apply>
                     </apply>
-                    <ci>Lambda</ci>
+                    <apply>
+                        <times/>
+                        <ci>W</ci>
+                        <ci>Lambda</ci>
+                    </apply>
                 </apply>
             </apply>
             <!--*pow(W, -1{dimensionless})*pow(Lambda, -1{dimensionless});-->
@@ -478,36 +470,36 @@
                 <eq/>
                 <ci>tau_r1</ci>
                 <apply>
-                    <plus/>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>mu_r1</ci>
                     <apply>
-                        <divide/>
+                        <plus/>
                         <apply>
-                            <times/>
-                            <cn cellml:units="dimensionless">2</cn>
-                            <ci>mu_r1</ci>
+                            <divide/>
                             <apply>
                                 <minus/>
                                 <ci>R_ref</ci>
                                 <ci>r1</ci>
                             </apply>
+                            <ci>R_ref</ci>
                         </apply>
-                        <ci>R_ref</ci>
-                    </apply>
-                    <apply>
-                        <times/>
-                        <cn cellml:units="dimensionless">1.5</cn>
                         <apply>
-                            <power/>
+                            <times/>
+                            <cn cellml:units="dimensionless">1.5</cn>
                             <apply>
-                                <divide/>
+                                <power/>
                                 <apply>
-                                    <minus/>
+                                    <divide/>
+                                    <apply>
+                                        <minus/>
+                                        <ci>R_ref</ci>
+                                        <ci>r1</ci>
+                                    </apply>
                                     <ci>R_ref</ci>
-                                    <ci>r1</ci>
                                 </apply>
-                                <ci>R_ref</ci>
+                                <cn cellml:units="dimensionless">2</cn>
                             </apply>
-                            <cn cellml:units="dimensionless">2</cn>
                         </apply>
                     </apply>
                 </apply>
@@ -516,36 +508,36 @@
                 <eq/>
                 <ci>tau_r21</ci>
                 <apply>
-                    <plus/>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>mu_r21</ci>
                     <apply>
-                        <divide/>
+                        <plus/>
                         <apply>
-                            <times/>
-                            <cn cellml:units="dimensionless">2</cn>
-                            <ci>mu_r21</ci>
+                            <divide/>
                             <apply>
                                 <minus/>
                                 <ci>R_ref</ci>
                                 <ci>r21</ci>
                             </apply>
+                            <ci>R_ref</ci>
                         </apply>
-                        <ci>R_ref</ci>
-                    </apply>
-                    <apply>
-                        <times/>
-                        <cn cellml:units="dimensionless">1.5</cn>
                         <apply>
-                            <power/>
+                            <times/>
+                            <cn cellml:units="dimensionless">1.5</cn>
                             <apply>
-                                <divide/>
+                                <power/>
                                 <apply>
-                                    <minus/>
+                                    <divide/>
+                                    <apply>
+                                        <minus/>
+                                        <ci>R_ref</ci>
+                                        <ci>r21</ci>
+                                    </apply>
                                     <ci>R_ref</ci>
-                                    <ci>r21</ci>
                                 </apply>
-                                <ci>R_ref</ci>
+                                <cn cellml:units="dimensionless">2</cn>
                             </apply>
-                            <cn cellml:units="dimensionless">2</cn>
                         </apply>
                     </apply>
                 </apply>
@@ -554,36 +546,36 @@
                 <eq/>
                 <ci>tau_r22</ci>
                 <apply>
-                    <plus/>
+                    <times/>
+                    <cn cellml:units="dimensionless">2</cn>
+                    <ci>mu_r22</ci>
                     <apply>
-                        <divide/>
+                        <plus/>
                         <apply>
-                            <times/>
-                            <cn cellml:units="dimensionless">2</cn>
-                            <ci>mu_r22</ci>
+                            <divide/>
                             <apply>
                                 <minus/>
                                 <ci>R_ref</ci>
                                 <ci>r22</ci>
                             </apply>
+                            <ci>R_ref</ci>
                         </apply>
-                        <ci>R_ref</ci>
-                    </apply>
-                    <apply>
-                        <times/>
-                        <cn cellml:units="dimensionless">1.5</cn>
                         <apply>
-                            <power/>
+                            <times/>
+                            <cn cellml:units="dimensionless">1.5</cn>
                             <apply>
-                                <divide/>
+                                <power/>
                                 <apply>
-                                    <minus/>
+                                    <divide/>
+                                    <apply>
+                                        <minus/>
+                                        <ci>R_ref</ci>
+                                        <ci>r22</ci>
+                                    </apply>
                                     <ci>R_ref</ci>
-                                    <ci>r22</ci>
                                 </apply>
-                                <ci>R_ref</ci>
+                                <cn cellml:units="dimensionless">2</cn>
                             </apply>
-                            <cn cellml:units="dimensionless">2</cn>
                         </apply>
                     </apply>
                 </apply>

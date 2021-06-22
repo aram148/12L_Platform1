@@ -1,9 +1,9 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0'?>
 <model name="airways_script" xmlns="http://www.cellml.org/cellml/1.1#" xmlns:cellml="http://www.cellml.org/cellml/1.1#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
     <component name="Environment">
         <variable cmeta:id="Environment_time" name="time" public_interface="out" units="second"/>
     </component>
-    <import xlink:href="hai.cellml">
+    <import xlink:href="hai1.cellml">
         <component component_ref="stress" name="stress"/>
         <component component_ref="AMp" name="AMp"/>
         <component component_ref="AM" name="AM"/>
@@ -11,44 +11,45 @@
         <component component_ref="M" name="M"/>
         <component component_ref="model_parameters" name="model_parameters"/>
     </import>
-    <import xlink:href="airwayradius.cellml">
+    <import xlink:href="airwayradius1.cellml">
         <component component_ref="lambert_r1" name="lambert_r1"/>
         <component component_ref="airway1_vals" name="airway1_vals"/>
         <component component_ref="parameters" name="parameters"/>
     </import>
-    <import xlink:href="airway1_radius.cellml">
+    <import xlink:href="airway1_radius1.cellml">
         <component component_ref="lambert_r21" name="lambert_r21"/>
         <component component_ref="lambert_r22" name="lambert_r22"/>
         <component component_ref="airway2_vals" name="airway2_vals"/>
         <component component_ref="airway22_vals" name="airway22_vals"/>
         <component component_ref="parameters_r2" name="parameters_r2"/>
     </import>
-    <import xlink:href="branched_algeb.cellml">
+    <import xlink:href="branched_algeb1.cellml">
         <component component_ref="algeb" name="algeb"/>
     </import>
     <component name="parent_airway">
         <variable name="r1" public_interface="in" units="mm"/>
         <variable name="r_w_r1" public_interface="in" units="mm"/>
         <variable name="r_m_r1" public_interface="in" units="mm"/>
+        <variable name="Ptm_r1" public_interface="in" units="pascal"/>
     </component>
     <component name="child_airway">
         <variable name="r21" public_interface="in" units="mm"/>
         <variable name="r22" public_interface="in" units="mm"/>
     </component>
     <component name="kap">
-        <variable initial_value="1" name="kappa" public_interface="out" units="dimensionless"/>
+        <variable initial_value="200" name="kappa" public_interface="out" units="pascal"/>
     </component>
     <component name="p_teth">
         <variable name="tau_r1" public_interface="in" units="dimensionless"/>
         <variable name="tau_r21" public_interface="in" units="dimensionless"/>
         <variable name="tau_r22" public_interface="in" units="dimensionless"/>
-        <variable name="pmidr1" public_interface="in" units="mmHg"/>
-        <variable name="pmidr21" public_interface="in" units="mmHg"/>
-        <variable name="pmidr22" public_interface="in" units="mmHg"/>
-        <variable name="Pmin_r1" public_interface="in" units="mmHg"/>
-        <variable name="Pmin_r22" public_interface="in" units="mmHg"/>
-        <variable name="Pmin_r21" public_interface="in" units="mmHg"/>
-        <variable name="p" public_interface="in" units="mmHg"/>
+        <variable name="pmidr1" public_interface="in" units="pascal"/>
+        <variable name="pmidr21" public_interface="in" units="pascal"/>
+        <variable name="pmidr22" public_interface="in" units="pascal"/>
+        <variable name="Pmin_r1" public_interface="in" units="pascal"/>
+        <variable name="Pmin_r22" public_interface="in" units="pascal"/>
+        <variable name="Pmin_r21" public_interface="in" units="pascal"/>
+        <variable name="p" public_interface="in" units="pascal"/>
         <variable name="Da1" public_interface="in" units="mm3"/>
         <variable name="Da21" public_interface="in" units="mm3"/>
         <variable name="Da22" public_interface="in" units="mm3"/>
@@ -56,9 +57,10 @@
         <variable name="Lambda" public_interface="in" units="mm3"/>
         <variable name="temp" public_interface="in" units="mm3"/>
         <variable name="W" public_interface="in" units="mm3"/>
+        <!--        var mu_r1: pascal {pub: in};-->
     </component>
     <component name="flow_press">
-        <variable name="pbot" public_interface="in" units="mmHg"/>
+        <variable name="pbot" public_interface="in" units="pascal"/>
         <variable name="q1p" public_interface="in" units="dimensionless"/>
         <variable name="q21" public_interface="in" units="dimensionless"/>
         <variable name="q22" public_interface="in" units="dimensionless"/>
@@ -122,15 +124,15 @@
         <map_variables variable_1="Pmin_r22" variable_2="Pmin_r22"/>
     </connection>
     <connection>
-        <map_components component_1="kap" component_2="lambert_r1"/>
+        <map_components component_1="kap" component_2="airway1_vals"/>
         <map_variables variable_1="kappa" variable_2="kappa"/>
     </connection>
     <connection>
-        <map_components component_1="kap" component_2="lambert_r21"/>
+        <map_components component_1="kap" component_2="airway2_vals"/>
         <map_variables variable_1="kappa" variable_2="kappa"/>
     </connection>
     <connection>
-        <map_components component_1="kap" component_2="lambert_r22"/>
+        <map_components component_1="kap" component_2="airway22_vals"/>
         <map_variables variable_1="kappa" variable_2="kappa"/>
     </connection>
     <connection>
@@ -144,6 +146,7 @@
     <connection>
         <map_components component_1="parent_airway" component_2="lambert_r1"/>
         <map_variables variable_1="r1" variable_2="r1"/>
+        <map_variables variable_1="Ptm_r1" variable_2="Ptm_r1"/>
     </connection>
     <connection>
         <map_components component_1="parent_airway" component_2="airway1_vals"/>

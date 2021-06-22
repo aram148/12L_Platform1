@@ -1,0 +1,341 @@
+<model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="hai" id="hai">
+    <units name="nanometre">
+        <unit prefix="nano" units="metre"/>
+    </units>
+    <units name="first_order_rate_constant">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <component name="environment">
+        <variable name="time" units="second" interface="public"/>
+    </component>
+    <component name="M" id="M">
+        <variable initial_value="1.0" name="M" units="dimensionless" interface="public"/>
+        <variable name="AM" units="dimensionless" interface="public"/>
+        <variable name="Mp" units="dimensionless" interface="public"/>
+        <variable name="k1" units="first_order_rate_constant" interface="public"/>
+        <variable name="k2" units="first_order_rate_constant" interface="public"/>
+        <variable name="k7" units="first_order_rate_constant" interface="public"/>
+        <variable name="time" units="second" interface="public"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>M</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <minus/>
+                            <ci>k1</ci>
+                        </apply>
+                        <ci>M</ci>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>k2</ci>
+                        <ci>Mp</ci>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>k7</ci>
+                        <ci>AM</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="Mp" id="Mp">
+        <variable initial_value="0.0" name="Mp" units="dimensionless" interface="public"/>
+        <variable name="AMp" units="dimensionless" interface="public"/>
+        <variable name="M" units="dimensionless" interface="public"/>
+        <variable name="k1" units="first_order_rate_constant" interface="public"/>
+        <variable name="k2" units="first_order_rate_constant" interface="public"/>
+        <variable name="k3" units="first_order_rate_constant" interface="public"/>
+        <variable name="k4" units="first_order_rate_constant" interface="public"/>
+        <variable name="time" units="second" interface="public"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>Mp</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <times/>
+                            <ci>k4</ci>
+                            <ci>AMp</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>k1</ci>
+                            <ci>M</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <plus/>
+                            <ci>k2</ci>
+                            <ci>k3</ci>
+                        </apply>
+                        <ci>Mp</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="AMp" id="AMp">
+        <variable initial_value="0.0" name="AMp" units="dimensionless" interface="public"/>
+        <variable name="Mp" units="dimensionless" interface="public"/>
+        <variable name="AM" units="dimensionless" interface="public"/>
+        <variable name="k5" units="first_order_rate_constant" interface="public"/>
+        <variable name="k6" units="first_order_rate_constant" interface="public"/>
+        <variable name="k3" units="first_order_rate_constant" interface="public"/>
+        <variable name="k4" units="first_order_rate_constant" interface="public"/>
+        <variable name="time" units="second" interface="public"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>AMp</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <times/>
+                            <ci>k3</ci>
+                            <ci>Mp</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>k6</ci>
+                            <ci>AM</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <plus/>
+                            <ci>k5</ci>
+                            <ci>k4</ci>
+                        </apply>
+                        <ci>AMp</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="AM" id="AM">
+        <variable initial_value="0.0" name="AM" units="dimensionless" interface="public"/>
+        <variable name="AMp" units="dimensionless" interface="public"/>
+        <variable name="k5" units="first_order_rate_constant" interface="public"/>
+        <variable name="k6" units="first_order_rate_constant" interface="public"/>
+        <variable name="k7" units="first_order_rate_constant" interface="public"/>
+        <variable name="time" units="second" interface="public"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>AM</ci>
+                </apply>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <times/>
+                        <ci>k5</ci>
+                        <ci>AMp</ci>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <plus/>
+                            <ci>k6</ci>
+                            <ci>k7</ci>
+                        </apply>
+                        <ci>AM</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="phosphorylation" id="phosphorylation">
+        <variable name="phosphorylation" units="dimensionless"/>
+        <variable name="AMp" units="dimensionless" interface="public"/>
+        <variable name="Mp" units="dimensionless" interface="public"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>phosphorylation</ci>
+                <apply>
+                    <plus/>
+                    <ci>AMp</ci>
+                    <ci>Mp</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="stress" id="stress">
+        <variable name="stress" units="dimensionless" interface="public"/>
+        <variable name="AMp" units="dimensionless" interface="public"/>
+        <variable name="AM" units="dimensionless" interface="public"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>stress</ci>
+                <apply>
+                    <plus/>
+                    <ci>AMp</ci>
+                    <ci>AM</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="model_parameters">
+        <variable name="k1" units="first_order_rate_constant" interface="public"/>
+        <variable initial_value="0.5" name="k2" units="first_order_rate_constant" interface="public"/>
+        <variable initial_value="0.5" name="k5" units="first_order_rate_constant" interface="public"/>
+        <variable name="k6" units="first_order_rate_constant" interface="public"/>
+        <variable initial_value="0.4" name="k3" units="first_order_rate_constant" interface="public"/>
+        <variable initial_value="0.1" name="k4" units="first_order_rate_constant" interface="public"/>
+        <variable initial_value="0.01" name="k7" units="first_order_rate_constant" interface="public"/>
+        <variable name="time" units="second" interface="public"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply id="k1_calculation">
+                <eq/>
+                <ci>k1</ci>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="first_order_rate_constant">0.55</cn>
+                        <apply>
+                            <and/>
+                            <apply>
+                                <geq/>
+                                <ci>time</ci>
+                                <cn cellml:units="second">0.0</cn>
+                            </apply>
+                            <apply>
+                                <lt/>
+                                <ci>time</ci>
+                                <cn cellml:units="second">5.0</cn>
+                            </apply>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="first_order_rate_constant">0.3</cn>
+                    </otherwise>
+                </piecewise>
+            </apply>
+            <apply id="k6_calculation">
+                <eq/>
+                <ci>k6</ci>
+                <ci>k1</ci>
+            </apply>
+        </math>
+    </component>
+    <connection component_1="model_parameters" component_2="environment">
+        
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection component_1="M" component_2="environment">
+        
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection component_1="Mp" component_2="environment">
+        
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection component_1="AMp" component_2="environment">
+        
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection component_1="AM" component_2="environment">
+        
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection component_1="M" component_2="model_parameters">
+        
+        <map_variables variable_1="k7" variable_2="k7"/>
+        <map_variables variable_1="k1" variable_2="k1"/>
+        <map_variables variable_1="k2" variable_2="k2"/>
+    </connection>
+    <connection component_1="Mp" component_2="model_parameters">
+        
+        <map_variables variable_1="k4" variable_2="k4"/>
+        <map_variables variable_1="k3" variable_2="k3"/>
+        <map_variables variable_1="k2" variable_2="k2"/>
+        <map_variables variable_1="k1" variable_2="k1"/>
+    </connection>
+    <connection component_1="AMp" component_2="model_parameters">
+        
+        <map_variables variable_1="k5" variable_2="k5"/>
+        <map_variables variable_1="k6" variable_2="k6"/>
+        <map_variables variable_1="k4" variable_2="k4"/>
+        <map_variables variable_1="k3" variable_2="k3"/>
+    </connection>
+    <connection component_1="AM" component_2="model_parameters">
+        
+        <map_variables variable_1="k5" variable_2="k5"/>
+        <map_variables variable_1="k6" variable_2="k6"/>
+        <map_variables variable_1="k7" variable_2="k7"/>
+    </connection>
+    <connection component_1="AM" component_2="M">
+        
+        <map_variables variable_1="AM" variable_2="AM"/>
+    </connection>
+    <connection component_1="AM" component_2="AMp">
+        
+        <map_variables variable_1="AMp" variable_2="AMp"/>
+        <map_variables variable_1="AM" variable_2="AM"/>
+    </connection>
+    <connection component_1="M" component_2="Mp">
+        
+        <map_variables variable_1="M" variable_2="M"/>
+        <map_variables variable_1="Mp" variable_2="Mp"/>
+    </connection>
+    <connection component_1="Mp" component_2="AMp">
+        
+        <map_variables variable_1="Mp" variable_2="Mp"/>
+        <map_variables variable_1="AMp" variable_2="AMp"/>
+    </connection>
+    <connection component_1="phosphorylation" component_2="AMp">
+        
+        <map_variables variable_1="AMp" variable_2="AMp"/>
+    </connection>
+    <connection component_1="phosphorylation" component_2="Mp">
+        
+        <map_variables variable_1="Mp" variable_2="Mp"/>
+    </connection>
+    <connection component_1="stress" component_2="AMp">
+        
+        <map_variables variable_1="AMp" variable_2="AMp"/>
+    </connection>
+    <connection component_1="stress" component_2="AM">
+        
+        <map_variables variable_1="AM" variable_2="AM"/>
+    </connection>
+    
+    
+</model>

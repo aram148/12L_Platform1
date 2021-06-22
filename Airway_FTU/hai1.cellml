@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<model cmeta:id="hai" name="hai" xmlns="http://www.cellml.org/cellml/1.0#" xmlns:cellml="http://www.cellml.org/cellml/1.0#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#">
+<model name="hai" xmlns="http://www.cellml.org/cellml/1.0#" xmlns:cellml="http://www.cellml.org/cellml/1.0#">
     <units name="nanometre">
         <unit prefix="nano" units="metre"/>
     </units>
@@ -9,7 +9,7 @@
     <component name="environment">
         <variable name="time" public_interface="out" units="second"/>
     </component>
-    <component cmeta:id="M" name="M">
+    <component name="M">
         <variable initial_value="1.0" name="M" public_interface="out" units="dimensionless"/>
         <variable name="AM" public_interface="in" units="dimensionless"/>
         <variable name="Mp" public_interface="in" units="dimensionless"/>
@@ -51,7 +51,7 @@
             </apply>
         </math>
     </component>
-    <component cmeta:id="Mp" name="Mp">
+    <component name="Mp">
         <variable initial_value="0.0" name="Mp" public_interface="out" units="dimensionless"/>
         <variable name="AMp" public_interface="in" units="dimensionless"/>
         <variable name="M" public_interface="in" units="dimensionless"/>
@@ -98,7 +98,7 @@
             </apply>
         </math>
     </component>
-    <component cmeta:id="AMp" name="AMp">
+    <component name="AMp">
         <variable initial_value="0.0" name="AMp" public_interface="out" units="dimensionless"/>
         <variable name="Mp" public_interface="in" units="dimensionless"/>
         <variable name="AM" public_interface="in" units="dimensionless"/>
@@ -145,7 +145,7 @@
             </apply>
         </math>
     </component>
-    <component cmeta:id="AM" name="AM">
+    <component name="AM">
         <variable initial_value="0.0" name="AM" public_interface="out" units="dimensionless"/>
         <variable name="AMp" public_interface="in" units="dimensionless"/>
         <variable name="k5" public_interface="in" units="first_order_rate_constant"/>
@@ -182,7 +182,7 @@
             </apply>
         </math>
     </component>
-    <component cmeta:id="phosphorylation" name="phosphorylation">
+    <component name="phosphorylation">
         <variable name="phosphorylation" units="dimensionless"/>
         <variable name="AMp" public_interface="in" units="dimensionless"/>
         <variable name="Mp" public_interface="in" units="dimensionless"/>
@@ -198,10 +198,11 @@
             </apply>
         </math>
     </component>
-    <component cmeta:id="stress" name="stress">
+    <component name="stress">
         <variable name="stress" public_interface="out" units="dimensionless"/>
         <variable name="AMp" public_interface="in" units="dimensionless"/>
         <variable name="AM" public_interface="in" units="dimensionless"/>
+        <!--        var kappa: dimensionless {pub: in};-->
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
